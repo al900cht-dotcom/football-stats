@@ -2,84 +2,434 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Футбольная статистика (все данные из CSV)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Футбольная аналитика: xG, владение, коэффициенты bet365</title>
     <style>
-        body { font-family: 'Courier New', monospace; background: #fff; margin: 1rem; }
-        h1 { border-bottom: 2px solid #000; }
-        .table-wrapper { overflow-x: auto; }
-        table { border-collapse: collapse; width: 100%; font-size: 0.75rem; }
-        th, td { border: 1px solid #888; padding: 5px; text-align: left; vertical-align: top; }
-        th { background: #f0f0f0; position: sticky; top: 0; }
-        .footer { margin-top: 1rem; font-size: 0.7rem; border-top: 1px dashed #aaa; padding-top: 0.5rem; }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Courier New', monospace;
+            background: #f9fafb;
+            margin: 0;
+            padding: 1.5rem;
+            color: #111827;
+        }
+        .container {
+            max-width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 1.25rem 1rem 1.5rem 1rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            border-left: 6px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 0 0 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #eef2ff;
+            color: #1e40af;
+            font-size: 0.7rem;
+            font-weight: normal;
+            padding: 4px 12px;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+        }
+        .sub {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .info-note {
+            background: #fef9e3;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 24px;
+            color: #92400e;
+            font-family: monospace;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            margin-top: 0.5rem;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 0.7rem;
+            min-width: 1300px;
+        }
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 10px 6px;
+            border: 1px solid #cbd5e1;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 6px;
+            vertical-align: middle;
+            background-color: white;
+            transition: background 0.1s ease;
+        }
+        tr:hover td {
+            background: #fafcff;
+        }
+        .numeric {
+            text-align: right;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 500;
+        }
+        .team-name {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .coeff {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #0c4a6e;
+        }
+        .footer {
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            background: #f1f5f9;
+            padding: 0.8rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: #334155;
+        }
+        .error-msg {
+            padding: 2rem;
+            text-align: center;
+            background: #fee2e2;
+            border-radius: 24px;
+            color: #b91c1c;
+            font-weight: 500;
+        }
+        .loading-skeleton {
+            padding: 2rem;
+            text-align: center;
+            color: #4b5563;
+        }
+        @media (max-width: 700px) {
+            body { padding: 0.75rem; }
+            th, td { padding: 5px 3px; }
+            table { font-size: 0.65rem; }
+        }
     </style>
 </head>
 <body>
-<h1>📊 ФУТБОЛЬНАЯ СТАТИСТИКА (все данные)</h1>
-<p>Автоматическая загрузка из <strong>data.csv</strong> — обновите CSV, и сайт покажет новые данные.</p>
-<div class="table-wrapper">
-    <table id="stats-table">
-        <thead id="table-header"></thead>
-        <tbody id="table-body"><tr><td>Загрузка данных...</td></tr></tbody>
-    </table>
-</div>
-<div class="footer">
-    ✅ Сайт читает CSV при каждом открытии. Чтобы обновить статистику, замените файл <strong>data.csv</strong> на сервере.
+<div class="container">
+    <h1>
+        ⚽ Футбольная статистика 
+        <span class="badge">xG | xGOT | владение | угловые | карточки</span>
+        <span class="badge">🎲 Коэффициенты bet365 (П1 / X / П2)</span>
+    </h1>
+    <div class="sub">
+        <span>📁 Источник: <strong>data.csv</strong> (разделитель «;», кодировка UTF-8)</span>
+        <span class="info-note">🔄 Обновите CSV на сервере — таблица перезагрузится при открытии страницы</span>
+    </div>
+    <div class="table-wrapper">
+        <table id="stats-table">
+            <thead id="table-header"></thead>
+            <tbody id="table-body">
+                <tr><td colspan="30" style="text-align:center;">⏳ Загрузка данных из data.csv ...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">
+        <span>✅ Все поля отображаются динамически: Дата | Страна | Чемпионат | Тур | Хозяева | Гости | Голы (хоз/гост) | Ожидаемые голы xG (дом/гость) | xGOT (дом/гость) | Владение% | Удары в створ | Угловые | ЖК | КК | Коэффициенты bet365 (П1, Ничья, П2)</span>
+        <span>📊 *Если в CSV отсутствуют какие-то столбцы — будет показано пустое значение, но шапка берётся из первой строки файла*</span>
+    </div>
 </div>
 
 <script>
-    function parseCSV(csvText) {
-        const rows = [];
-        let currentRow = [], currentField = '', inQuotes = false;
-        for (let i = 0; i < csvText.length; i++) {
-            const ch = csvText[i], next = csvText[i+1];
-            if (inQuotes) {
-                if (ch === '"') {
-                    if (next === '"') { currentField += '"'; i++; }
-                    else inQuotes = false;
-                } else currentField += ch;
-            } else {
-                if (ch === '"') inQuotes = true;
-                else if (ch === ';') { currentRow.push(currentField); currentField = ''; }
-                else if (ch === '\n' || (ch === '\r' && next === '\n')) {
-                    if (ch === '\r') i++;
-                    currentRow.push(currentField);
-                    rows.push(currentRow);
-                    currentRow = [];
-                    currentField = '';
-                } else if (ch !== '\r') currentField += ch;
+    (function() {
+        // Улучшенный парсер CSV с поддержкой кавычек и разделителя точка с запятой (;) 
+        // также корректно обрабатывает переводы строк внутри полей.
+        function parseCSV(csvText) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+            for (let i = 0; i < csvText.length; i++) {
+                const ch = csvText[i];
+                const nextChar = csvText[i + 1];
+                
+                if (inQuotes) {
+                    if (ch === '"') {
+                        // Если встречаем двойную кавычку внутри кавычек
+                        if (nextChar === '"') {
+                            currentField += '"';
+                            i++; // пропускаем следующую кавычку
+                        } else {
+                            inQuotes = false;
+                        }
+                    } else {
+                        currentField += ch;
+                    }
+                } else {
+                    if (ch === '"') {
+                        inQuotes = true;
+                    } 
+                    else if (ch === ';') {
+                        // разделитель столбцов
+                        currentRow.push(currentField);
+                        currentField = '';
+                    }
+                    else if (ch === '\n') {
+                        // конец строки
+                        currentRow.push(currentField);
+                        rows.push(currentRow);
+                        currentRow = [];
+                        currentField = '';
+                    }
+                    else if (ch === '\r') {
+                        // игнорируем возврат каретки, но если следующий символ \n — пропустим его в след итерации
+                        if (nextChar === '\n') {
+                            // пропускаем \r\n, обработаем как \n на след шаге
+                            continue;
+                        } else {
+                            // просто \r — считаем концом строки
+                            currentRow.push(currentField);
+                            rows.push(currentRow);
+                            currentRow = [];
+                            currentField = '';
+                        }
+                    }
+                    else {
+                        currentField += ch;
+                    }
+                }
             }
+            // последнее поле / последняя строка
+            if (currentField !== '' || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+            // удаляем возможные пустые строки в конце (если вся строка пустая)
+            return rows.filter(row => !(row.length === 1 && row[0] === '' && rows.indexOf(row) === rows.length-1));
         }
-        if (currentField !== '' || currentRow.length) { currentRow.push(currentField); rows.push(currentRow); }
-        return rows;
-    }
 
-    fetch('data.csv')
-        .then(res => { if (!res.ok) throw new Error(`CSV не найден (${res.status})`); return res.text(); })
-        .then(text => {
-            const data = parseCSV(text);
-            if (data.length === 0) throw new Error('CSV пуст');
-            const headers = data[0];
-            const rows = data.slice(1).filter(r => r.some(c => c.trim() !== ''));
+        // Функция для отображения таблицы
+        function renderTable(headers, dataRows) {
             const thead = document.getElementById('table-header');
             const tbody = document.getElementById('table-body');
+            
+            if (!thead || !tbody) return;
+            
             thead.innerHTML = '';
             tbody.innerHTML = '';
+            
+            if (!headers || headers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="30">❌ Ошибка: отсутствуют заголовки в CSV</td></tr>';
+                return;
+            }
+            
+            // Создаём заголовок
             const trHead = document.createElement('tr');
-            headers.forEach(h => { const th = document.createElement('th'); th.textContent = h.trim(); trHead.appendChild(th); });
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                let headerText = header.trim();
+                // Добавляем визуальные подсказки для коэффициентов bet365, чтобы было понятно
+                if (headerText.toLowerCase().includes('коэффициенты п1') || headerText === 'Коэффициенты П1') {
+                    headerText = '⚡ П1 (bet365)';
+                } else if (headerText.toLowerCase().includes('коэффициенты н') || headerText === 'Коэффициенты Н') {
+                    headerText = '🤝 Ничья (bet365)';
+                } else if (headerText.toLowerCase().includes('коэффициенты п2') || headerText === 'Коэффициенты П2') {
+                    headerText = '✈️ П2 (bet365)';
+                }
+                th.textContent = headerText;
+                th.title = `столбец: ${header.trim()}`;
+                trHead.appendChild(th);
+            });
             thead.appendChild(trHead);
-            rows.forEach(row => {
+            
+            // Если нет строк с данными
+            if (dataRows.length === 0) {
+                const emptyRow = document.createElement('tr');
+                const emptyCell = document.createElement('td');
+                emptyCell.colSpan = headers.length;
+                emptyCell.textContent = '📭 Нет записей в CSV (только заголовки или пустые строки)';
+                emptyCell.style.textAlign = 'center';
+                emptyRow.appendChild(emptyCell);
+                tbody.appendChild(emptyRow);
+                return;
+            }
+            
+            // Заполняем строки
+            for (let rowIdx = 0; rowIdx < dataRows.length; rowIdx++) {
+                const rowCells = dataRows[rowIdx];
                 const tr = document.createElement('tr');
-                for (let i = 0; i < headers.length; i++) {
+                
+                for (let colIdx = 0; colIdx < headers.length; colIdx++) {
                     const td = document.createElement('td');
-                    td.textContent = (i < row.length) ? row[i].trim() : '';
+                    let rawValue = (colIdx < rowCells.length) ? rowCells[colIdx] : '';
+                    if (rawValue === undefined || rawValue === null) rawValue = '';
+                    let displayValue = rawValue.trim();
+                    
+                    // Добавляем класс для числовых/коэффициентных столбцов для выравнивания
+                    const headerName = headers[colIdx].toLowerCase();
+                    const isNumericLike = /(гол|xg|xgot|владение|удары|угловые|карточки|коэффициент|п1|п2|ничья|счет|ожидаемые)/i.test(headerName);
+                    if (isNumericLike && !isNaN(parseFloat(displayValue.replace(',', '.'))) && displayValue !== '') {
+                        td.classList.add('numeric');
+                        // Преобразуем запятую в точку для визуального единообразия, но отображаем как есть
+                        let numValue = parseFloat(displayValue.replace(',', '.'));
+                        if (!isNaN(numValue)) {
+                            // Оставляем как строку, но для коэффициентов можно показать до 2 знаков
+                            if (headerName.includes('коэффициент') || headerName.includes('п1') || headerName.includes('п2') || headerName.includes('ничья')) {
+                                if (numValue % 1 !== 0) displayValue = numValue.toFixed(2);
+                            }
+                        }
+                        td.textContent = displayValue;
+                    } 
+                    else if (headerName.includes('дома') || headerName.includes('гости') || headerName.includes('страна') || headerName.includes('чемпионат')) {
+                        td.classList.add('team-name');
+                        td.textContent = displayValue || '—';
+                    }
+                    else {
+                        td.textContent = displayValue || '—';
+                    }
+                    
+                    // дополнительно если это коэффициенты bet365 — добавим класс для выделения
+                    if (headerName.includes('коэффициенты п1') || headerName.includes('коэффициенты н') || headerName.includes('коэффициенты п2') ||
+                        headerName === 'коэффициенты п1' || headerName === 'коэффициенты н' || headerName === 'коэффициенты п2') {
+                        td.classList.add('coeff');
+                        if (displayValue && !isNaN(parseFloat(displayValue))) {
+                            let val = parseFloat(displayValue);
+                            td.textContent = val.toFixed(2);
+                        }
+                    }
+                    
+                    // Обработка счета "X - Y" или подобного
+                    if ((headerName.includes('счет хозяев') || headerName.includes('счет гостей')) && displayValue !== '—') {
+                        td.classList.add('numeric');
+                    }
                     tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
+            }
+        }
+        
+        // Загрузка и обработка CSV
+        function loadAndDisplayCSV() {
+            const tbody = document.getElementById('table-body');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="30" style="text-align:center;">⏳ Загрузка data.csv ...</td></tr>';
+            
+            fetch('data.csv', { cache: 'no-store' })  // отключаем кеш, чтобы при обновлении файла всегда свежие данные
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Файл data.csv не найден (HTTP ${response.status}). Поместите CSV в одну папку с index.html`);
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    if (!csvText || csvText.trim() === '') {
+                        throw new Error('CSV файл пуст. Добавьте данные с разделителем ";"');
+                    }
+                    
+                    const parsedRows = parseCSV(csvText);
+                    if (parsedRows.length === 0) {
+                        throw new Error('CSV не содержит строк после парсинга');
+                    }
+                    
+                    // Первая строка — заголовки (шапка)
+                    const headers = parsedRows[0].map(h => h.trim()).filter((v,i,a) => v !== '' || i===0);
+                    if (headers.length === 0) {
+                        throw new Error('Заголовки отсутствуют или первая строка пуста');
+                    }
+                    
+                    // Данные (все остальные строки, где есть хоть один непустой элемент)
+                    let dataRows = parsedRows.slice(1);
+                    // фильтруем строки, которые полностью пустые (все элементы === '')
+                    dataRows = dataRows.filter(row => {
+                        return row.some(cell => cell !== undefined && cell.trim() !== '');
+                    });
+                    
+                    // Проверяем, совпадает ли количество колонок в данных с заголовками, если нет — дополняем пустыми
+                    const normalizedData = dataRows.map(row => {
+                        const newRow = [...row];
+                        while (newRow.length < headers.length) newRow.push('');
+                        // если больше колонок чем заголовков — обрезаем (нестандартно, но безопасно)
+                        if (newRow.length > headers.length) newRow.length = headers.length;
+                        return newRow;
+                    });
+                    
+                    renderTable(headers, normalizedData);
+                })
+                .catch(error => {
+                    console.error('Ошибка при загрузке CSV:', error);
+                    const tbody = document.getElementById('table-body');
+                    if (tbody) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="30" style="padding: 2rem; text-align:center; background:#fff0f0;">
+                                    <strong>⚠️ Ошибка доступа к данным</strong><br>
+                                    ${error.message}<br><br>
+                                    📌 <span style="background:#fee2e2; padding:4px 8px; border-radius:12px;">Требования: файл <strong>data.csv</strong> должен лежать рядом с index.html, разделитель — точка с запятой (;).</span><br>
+                                    Пример первой строки (шапка):<br>
+                                    <code style="background:#f1f1f1; display:inline-block; margin-top:8px; padding:6px;">Дата;Страна;Чемпионат;Тур;Дома;Гости;Счет хозяев;Счет гостей;Ожидаемые голы (xG) Дома;Ожидаемые голы (xG) Гости;xG в створ (xGOT) Дома;xG в створ (xGOT) Гости;Владение мячом Дома;Владение мячом Гости;Удары в створ Дома;Удары в створ Гости;Угловые Дома;Угловые Гости;Желтые карточки Дома;Желтые карточки Гости;Красные карточки Дома;Красные карточки Гости;Коэффициенты П1;Коэффициенты Н;Коэффициенты П2</code>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                    const thead = document.getElementById('table-header');
+                    if (thead) thead.innerHTML = ''; // чистим шапку при ошибке
+                });
+        }
+        
+        // запускаем загрузку сразу
+        loadAndDisplayCSV();
+        
+        // дополнительно: если нужно автообновление при повторном фокусе, но достаточно однократной загрузки.
+        // добавим возможность перезагрузки по нажатию (полезно для дебага) — но не обязательно, оставим чистую логику.
+        // Для удобства: при клике на футер можно перезагрузить данные (скрытая фича)
+        const footer = document.querySelector('.footer');
+        if (footer) {
+            footer.style.cursor = 'pointer';
+            footer.addEventListener('click', (e) => {
+                if (e.target.closest('.footer')) {
+                    loadAndDisplayCSV();
+                    const msg = document.createElement('span');
+                    msg.textContent = '🔄 Обновление...';
+                    msg.style.fontSize = '0.7rem';
+                    msg.style.marginLeft = '12px';
+                    msg.style.color = '#2563eb';
+                    const oldMsg = footer.querySelector('.refresh-toast');
+                    if (oldMsg) oldMsg.remove();
+                    msg.classList.add('refresh-toast');
+                    footer.appendChild(msg);
+                    setTimeout(() => msg.remove(), 1500);
+                }
             });
-        })
-        .catch(err => {
-            document.getElementById('table-body').innerHTML = `<tr><td colspan="30" style="color:red;">Ошибка: ${err.message}. Убедитесь, что файл "data.csv" лежит рядом с этой страницей.</td></tr>`;
-        });
+        }
+    })();
 </script>
 </body>
 </html>
