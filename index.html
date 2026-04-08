@@ -3,50 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Футбольная аналитика: xG, владение, коэффициенты bet365</title>
+    <title>Футбольная аналитика: xG, владение, коэффициенты bet365 — фильтры + липкая шапка</title>
     <style>
         * {
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Courier New', monospace;
-            background: #f9fafb;
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            background: #eef2f5;
             margin: 0;
-            padding: 1.5rem;
-            color: #111827;
+            padding: 1rem;
+            color: #0a2540;
         }
         .container {
-            max-width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            padding: 1.25rem 1rem 1.5rem 1rem;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            padding: 1.25rem 1rem 1.8rem 1rem;
+            transition: all 0.2s;
         }
         h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.7rem;
+            font-weight: 800;
             border-left: 6px solid #3b82f6;
             padding-left: 1rem;
-            margin: 0 0 0.25rem 0;
+            margin: 0 0 0.35rem 0;
             display: flex;
             align-items: center;
-            gap: 8px;
             flex-wrap: wrap;
+            gap: 10px;
         }
         .badge {
             background: #eef2ff;
             color: #1e40af;
             font-size: 0.7rem;
-            font-weight: normal;
+            font-weight: 600;
             padding: 4px 12px;
             border-radius: 40px;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
         .sub {
-            color: #4b5563;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 0.75rem;
+            color: #2c3e66;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2edf2;
+            padding-bottom: 0.6rem;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -54,125 +56,256 @@
             gap: 12px;
         }
         .info-note {
-            background: #fef9e3;
-            font-size: 0.75rem;
-            padding: 6px 12px;
-            border-radius: 24px;
-            color: #92400e;
+            background: #fff3e0;
+            font-size: 0.72rem;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: #b85c00;
             font-family: monospace;
+            font-weight: 500;
         }
+        /* Панель фильтров */
+        .filters-panel {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid #dce5ec;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+            gap: 12px;
+        }
+        .filters-header span {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e4a76;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .filter-btn {
+            background: white;
+            border: 1px solid #cbdde6;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2c5a7a;
+        }
+        .filter-btn:hover {
+            background: #e6f0f7;
+            border-color: #3b82f6;
+        }
+        .filter-btn.primary {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .filter-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 5px 2px;
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #cbdde6;
+            border-radius: 32px;
+            padding: 2px 8px 2px 12px;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: 0.1s;
+        }
+        .filter-chip select, .filter-chip input {
+            border: none;
+            background: transparent;
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 4px 0;
+            outline: none;
+            max-width: 130px;
+            color: #0f2b3d;
+        }
+        .filter-chip button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            color: #8ba0ae;
+            padding: 0 4px;
+            border-radius: 20px;
+        }
+        .filter-chip button:hover {
+            color: #dc2626;
+        }
+        .stats-badge {
+            font-size: 0.7rem;
+            background: #eef2ff;
+            padding: 2px 10px;
+            border-radius: 40px;
+            color: #2563eb;
+        }
+        /* Таблица с закреплённой шапкой */
         .table-wrapper {
             overflow-x: auto;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            border: 1px solid #dce5ec;
             background: #fff;
-            margin-top: 0.5rem;
+            position: relative;
+            max-height: 65vh;
+            overflow-y: auto;
         }
-        table {
+        /* sticky header (как в Excel) */
+        .stats-table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 0.7rem;
-            min-width: 1300px;
+            font-size: 0.72rem;
+            min-width: 1100px;
         }
-        th {
-            background: #f1f5f9;
-            color: #0f172a;
-            font-weight: 700;
-            padding: 10px 6px;
-            border: 1px solid #cbd5e1;
+        .stats-table thead tr th {
             position: sticky;
             top: 0;
-            z-index: 10;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
+            background: #eef3fc;
+            z-index: 20;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        td {
-            border: 1px solid #e2e8f0;
+        .stats-table th {
+            background: #eef3fc;
+            color: #0f2b3d;
+            font-weight: 800;
+            padding: 10px 8px;
+            border: 1px solid #cfdfe8;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 0.7rem;
+            letter-spacing: 0.2px;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.3;
+            min-width: 70px;
+        }
+        .stats-table td {
+            border: 1px solid #e2edf2;
             padding: 8px 6px;
             vertical-align: middle;
             background-color: white;
             transition: background 0.1s ease;
+            font-size: 0.72rem;
         }
-        tr:hover td {
-            background: #fafcff;
+        .stats-table tr:hover td {
+            background: #f9fdfe;
         }
         .numeric {
             text-align: right;
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-weight: 500;
         }
         .team-name {
-            font-weight: 600;
+            font-weight: 700;
             white-space: nowrap;
+            background-color: #fefce8;
         }
         .coeff {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #0c4a6e;
+            background: #f1f5f9;
+            font-weight: 700;
+            color: #075985;
+            font-family: monospace;
         }
         .footer {
             margin-top: 1.5rem;
-            font-size: 0.7rem;
-            background: #f1f5f9;
+            font-size: 0.68rem;
+            background: #eef3f8;
             padding: 0.8rem 1rem;
-            border-radius: 20px;
+            border-radius: 24px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            color: #334155;
+            color: #1f4662;
         }
-        .error-msg {
-            padding: 2rem;
+        .refresh-hint {
+            cursor: pointer;
+            background: #dee9f0;
+            padding: 3px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+        @media (max-width: 780px) {
+            body { padding: 0.5rem; }
+            .stats-table th, .stats-table td { padding: 5px 4px; }
+            .stats-table { font-size: 0.65rem; }
+            .filter-chip select, .filter-chip input { max-width: 100px; }
+        }
+        .empty-filter-row td {
             text-align: center;
-            background: #fee2e2;
-            border-radius: 24px;
-            color: #b91c1c;
-            font-weight: 500;
-        }
-        .loading-skeleton {
             padding: 2rem;
-            text-align: center;
-            color: #4b5563;
-        }
-        @media (max-width: 700px) {
-            body { padding: 0.75rem; }
-            th, td { padding: 5px 3px; }
-            table { font-size: 0.65rem; }
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>
-        ⚽ Футбольная статистика 
-        <span class="badge">xG | xGOT | владение | угловые | карточки</span>
-        <span class="badge">🎲 Коэффициенты bet365 (П1 / X / П2)</span>
+        ⚽ Футбольная аналитика 
+        <span class="badge">xG · xGOT · владение · удары · угловые · карточки</span>
+        <span class="badge">🎲 bet365 (1X2)</span>
     </h1>
     <div class="sub">
-        <span>📁 Источник: <strong>data.csv</strong> (разделитель «;», кодировка UTF-8)</span>
-        <span class="info-note">🔄 Обновите CSV на сервере — таблица перезагрузится при открытии страницы</span>
+        <span>📁 Источник: <strong>data.csv</strong> (разделитель «;» , UTF-8)</span>
+        <span class="info-note">🔄 Обновите CSV на сервере → страница перезагрузит данные</span>
     </div>
-    <div class="table-wrapper">
-        <table id="stats-table">
+
+    <!-- Панель динамических фильтров -->
+    <div class="filters-panel" id="filtersPanel">
+        <div class="filters-header">
+            <span>🔍 Фильтры по столбцам (интерактивный поиск)</span>
+            <div class="filter-buttons">
+                <button class="filter-btn" id="clearAllFiltersBtn">✖️ Сбросить фильтры</button>
+                <button class="filter-btn primary" id="applyFiltersBtn">✅ Применить фильтры</button>
+            </div>
+        </div>
+        <div id="filterInputsContainer" class="filter-inputs">
+            <!-- сюда динамически подставятся фильтры по каждому столбцу -->
+            <div style="font-size:0.7rem; color:#6c8dae;">Загрузка данных...</div>
+        </div>
+        <div class="stats-badge" id="filterStats" style="margin-top: 8px; display: inline-block;">⚡ Показаны все записи</div>
+    </div>
+
+    <div class="table-wrapper" id="tableWrapper">
+        <table class="stats-table" id="stats-table">
             <thead id="table-header"></thead>
             <tbody id="table-body">
                 <tr><td colspan="30" style="text-align:center;">⏳ Загрузка данных из data.csv ...</td></tr>
             </tbody>
         </table>
     </div>
+
     <div class="footer">
-        <span>✅ Все поля отображаются динамически: Дата | Страна | Чемпионат | Тур | Хозяева | Гости | Голы (хоз/гост) | Ожидаемые голы xG (дом/гость) | xGOT (дом/гость) | Владение% | Удары в створ | Угловые | ЖК | КК | Коэффициенты bet365 (П1, Ничья, П2)</span>
-        <span>📊 *Если в CSV отсутствуют какие-то столбцы — будет показано пустое значение, но шапка берётся из первой строки файла*</span>
+        <span>✅ <strong>Фильтры:</strong> введите текст или выберите значение → нажмите "Применить" | Шапка закреплена при скролле</span>
+        <span class="refresh-hint" id="footerRefreshBtn">🖱️ Кликни → перезагрузка CSV</span>
     </div>
 </div>
 
 <script>
     (function() {
-        // Улучшенный парсер CSV с поддержкой кавычек и разделителя точка с запятой (;) 
-        // также корректно обрабатывает переводы строк внутри полей.
+        // ---------- CSV парсер (;) ----------
         function parseCSV(csvText) {
             const rows = [];
             let currentRow = [];
@@ -181,254 +314,331 @@
             for (let i = 0; i < csvText.length; i++) {
                 const ch = csvText[i];
                 const nextChar = csvText[i + 1];
-                
                 if (inQuotes) {
                     if (ch === '"') {
-                        // Если встречаем двойную кавычку внутри кавычек
-                        if (nextChar === '"') {
-                            currentField += '"';
-                            i++; // пропускаем следующую кавычку
-                        } else {
-                            inQuotes = false;
-                        }
-                    } else {
-                        currentField += ch;
-                    }
+                        if (nextChar === '"') { currentField += '"'; i++; }
+                        else { inQuotes = false; }
+                    } else { currentField += ch; }
                 } else {
-                    if (ch === '"') {
-                        inQuotes = true;
-                    } 
-                    else if (ch === ';') {
-                        // разделитель столбцов
-                        currentRow.push(currentField);
-                        currentField = '';
-                    }
-                    else if (ch === '\n') {
-                        // конец строки
-                        currentRow.push(currentField);
-                        rows.push(currentRow);
-                        currentRow = [];
-                        currentField = '';
-                    }
-                    else if (ch === '\r') {
-                        // игнорируем возврат каретки, но если следующий символ \n — пропустим его в след итерации
-                        if (nextChar === '\n') {
-                            // пропускаем \r\n, обработаем как \n на след шаге
-                            continue;
-                        } else {
-                            // просто \r — считаем концом строки
-                            currentRow.push(currentField);
-                            rows.push(currentRow);
-                            currentRow = [];
-                            currentField = '';
-                        }
-                    }
-                    else {
-                        currentField += ch;
-                    }
+                    if (ch === '"') { inQuotes = true; }
+                    else if (ch === ';') { currentRow.push(currentField); currentField = ''; }
+                    else if (ch === '\n') { currentRow.push(currentField); rows.push(currentRow); currentRow = []; currentField = ''; }
+                    else if (ch === '\r') { if (nextChar !== '\n') { currentRow.push(currentField); rows.push(currentRow); currentRow = []; currentField = ''; } }
+                    else { currentField += ch; }
                 }
             }
-            // последнее поле / последняя строка
-            if (currentField !== '' || currentRow.length > 0) {
-                currentRow.push(currentField);
-                rows.push(currentRow);
-            }
-            // удаляем возможные пустые строки в конце (если вся строка пустая)
+            if (currentField !== '' || currentRow.length > 0) { currentRow.push(currentField); rows.push(currentRow); }
             return rows.filter(row => !(row.length === 1 && row[0] === '' && rows.indexOf(row) === rows.length-1));
         }
 
-        // Функция для отображения таблицы
-        function renderTable(headers, dataRows) {
+        // Формирование красивого заголовка (многострочный)
+        function beautifyHeader(original) {
+            let raw = original.trim();
+            if (raw === "") return "—";
+            const low = raw.toLowerCase();
+            if (low.includes("коэффициенты п1") || low === "п1") return "⚡ П1 (bet365)";
+            if (low.includes("коэффициенты н") || low === "ничья") return "🤝 Ничья (bet365)";
+            if (low.includes("коэффициенты п2") || low === "п2") return "✈️ П2 (bet365)";
+            if (low.includes("ожидаемые голы") && (low.includes("дома") || low.includes("хозя"))) return "xG\n(хозяева)";
+            if (low.includes("ожидаемые голы") && (low.includes("гости") || low.includes("гост"))) return "xG\n(гости)";
+            if ((low.includes("xg") && low.includes("дом")) || low === "xg дом") return "xG\n(дом)";
+            if ((low.includes("xg") && low.includes("гост")) || low === "xg гости") return "xG\n(гости)";
+            if (low.includes("xgot") && (low.includes("дом") || low.includes("хозя"))) return "xGOT\n(хозяева)";
+            if (low.includes("xgot") && (low.includes("гост") || low.includes("гости"))) return "xGOT\n(гости)";
+            if (low.includes("хс в створ") && low.includes("дома")) return "xGOT\n(дом)";
+            if (low.includes("хс в створ") && low.includes("гости")) return "xGOT\n(гости)";
+            if (low.includes("владение мячом") && (low.includes("дома") || low.includes("хозя"))) return "Владение %\n(хозяева)";
+            if (low.includes("владение мячом") && (low.includes("гости") || low.includes("гост"))) return "Владение %\n(гости)";
+            if (low.includes("удары в створ") && (low.includes("дома") || low.includes("хозя"))) return "Удары в створ\n(дом)";
+            if (low.includes("удары в створ") && (low.includes("гости") || low.includes("гост"))) return "Удары в створ\n(гости)";
+            if ((low.includes("угловые") && low.includes("дома")) || low === "угловые дом") return "Угловые\n(дом)";
+            if ((low.includes("угловые") && low.includes("гости")) || low === "угловые гости") return "Угловые\n(гости)";
+            if ((low.includes("желтые карточки") && low.includes("дома")) || low.includes("жк дом")) return "ЖК\n(хозяева)";
+            if ((low.includes("желтые карточки") && low.includes("гости")) || low.includes("жк гости")) return "ЖК\n(гости)";
+            if ((low.includes("красные карточки") && low.includes("дома")) || low.includes("кк дом")) return "КК\n(хозяева)";
+            if ((low.includes("красные карточки") && low.includes("гости")) || low.includes("кк гости")) return "КК\n(гости)";
+            if (low.includes("счет хозяев")) return "Голы\nхозяев";
+            if (low.includes("счет гостей")) return "Голы\nгостей";
+            if (low === "дата") return "📅 ДАТА";
+            if (low === "страна") return "🌍 СТРАНА";
+            if (low === "чемпионат") return "🏆 ЧЕМПИОНАТ";
+            if (low === "тур") return "📌 ТУР";
+            if (low === "дома" || low === "хозяева") return "🏠 ХОЗЯЕВА";
+            if (low === "гости" || low === "гости") return "✈️ ГОСТИ";
+            if (raw.length > 18) { let parts = raw.split(/\s+/); if(parts.length>2){ let mid=Math.ceil(parts.length/2); return parts.slice(0,mid).join(' ')+'\n'+parts.slice(mid).join(' '); } }
+            return raw;
+        }
+
+        let fullDataRows = [];      // все строки (объекты: значения по индексам)
+        let headersList = [];       // оригинальные заголовки
+        let currentFilters = [];    // массив {colIndex, filterValue}
+
+        // Функция отрисовки таблицы с учетом фильтров
+        function renderFilteredTable() {
             const thead = document.getElementById('table-header');
             const tbody = document.getElementById('table-body');
-            
             if (!thead || !tbody) return;
-            
+            if (!headersList.length) return;
+
+            // Строим шапку (с многстрочными заголовками)
             thead.innerHTML = '';
-            tbody.innerHTML = '';
-            
-            if (!headers || headers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="30">❌ Ошибка: отсутствуют заголовки в CSV</td></tr>';
-                return;
-            }
-            
-            // Создаём заголовок
             const trHead = document.createElement('tr');
-            headers.forEach(header => {
+            headersList.forEach((orig, idx) => {
+                const display = beautifyHeader(orig);
                 const th = document.createElement('th');
-                let headerText = header.trim();
-                // Добавляем визуальные подсказки для коэффициентов bet365, чтобы было понятно
-                if (headerText.toLowerCase().includes('коэффициенты п1') || headerText === 'Коэффициенты П1') {
-                    headerText = '⚡ П1 (bet365)';
-                } else if (headerText.toLowerCase().includes('коэффициенты н') || headerText === 'Коэффициенты Н') {
-                    headerText = '🤝 Ничья (bet365)';
-                } else if (headerText.toLowerCase().includes('коэффициенты п2') || headerText === 'Коэффициенты П2') {
-                    headerText = '✈️ П2 (bet365)';
+                th.style.whiteSpace = 'normal';
+                th.style.wordBreak = 'break-word';
+                th.style.lineHeight = '1.35';
+                th.style.textAlign = 'center';
+                th.style.verticalAlign = 'middle';
+                if (display.includes('\n')) {
+                    const parts = display.split('\n');
+                    th.innerHTML = parts.map(part => `<span style="display:block;">${part}</span>`).join('');
+                } else {
+                    th.textContent = display;
                 }
-                th.textContent = headerText;
-                th.title = `столбец: ${header.trim()}`;
+                th.title = `Фильтр: ${orig}`;
                 trHead.appendChild(th);
             });
             thead.appendChild(trHead);
-            
-            // Если нет строк с данными
-            if (dataRows.length === 0) {
-                const emptyRow = document.createElement('tr');
-                const emptyCell = document.createElement('td');
-                emptyCell.colSpan = headers.length;
-                emptyCell.textContent = '📭 Нет записей в CSV (только заголовки или пустые строки)';
-                emptyCell.style.textAlign = 'center';
-                emptyRow.appendChild(emptyCell);
-                tbody.appendChild(emptyRow);
+
+            // Фильтрация данных
+            let filtered = fullDataRows;
+            if (currentFilters.length > 0) {
+                filtered = fullDataRows.filter(row => {
+                    for (let f of currentFilters) {
+                        const colIdx = f.colIndex;
+                        const filterVal = f.filterValue.trim().toLowerCase();
+                        if (filterVal === "") continue; // пустой фильтр не фильтрует
+                        let cellValue = (colIdx < row.length) ? row[colIdx] : "";
+                        cellValue = (cellValue === undefined || cellValue === null) ? "" : cellValue.toString().trim().toLowerCase();
+                        if (!cellValue.includes(filterVal)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+
+            // статистика
+            const filterStatsSpan = document.getElementById('filterStats');
+            if (filterStatsSpan) {
+                const total = fullDataRows.length;
+                const shown = filtered.length;
+                filterStatsSpan.innerHTML = `📊 Отфильтровано: ${shown} из ${total} записей ${shown !== total ? '(активны фильтры)' : '(все записи)'}`;
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${headersList.length}" style="text-align:center; padding:2rem;">🔍 Ничего не найдено. Измените условия фильтрации</td></tr>`;
                 return;
             }
-            
-            // Заполняем строки
-            for (let rowIdx = 0; rowIdx < dataRows.length; rowIdx++) {
-                const rowCells = dataRows[rowIdx];
+
+            // заполняем тело
+            tbody.innerHTML = '';
+            for (let rowIdx = 0; rowIdx < filtered.length; rowIdx++) {
+                const rowCells = filtered[rowIdx];
                 const tr = document.createElement('tr');
-                
-                for (let colIdx = 0; colIdx < headers.length; colIdx++) {
+                for (let colIdx = 0; colIdx < headersList.length; colIdx++) {
                     const td = document.createElement('td');
                     let rawValue = (colIdx < rowCells.length) ? rowCells[colIdx] : '';
                     if (rawValue === undefined || rawValue === null) rawValue = '';
                     let displayValue = rawValue.trim();
-                    
-                    // Добавляем класс для числовых/коэффициентных столбцов для выравнивания
-                    const headerName = headers[colIdx].toLowerCase();
-                    const isNumericLike = /(гол|xg|xgot|владение|удары|угловые|карточки|коэффициент|п1|п2|ничья|счет|ожидаемые)/i.test(headerName);
-                    if (isNumericLike && !isNaN(parseFloat(displayValue.replace(',', '.'))) && displayValue !== '') {
+                    const headerLower = headersList[colIdx].toLowerCase();
+                    const isNumeric = /(гол|xg|xgot|владение|удары|угловые|карточки|коэффициент|п1|п2|ничья|счет)/i.test(headerLower);
+                    if (isNumeric && displayValue !== '' && !isNaN(parseFloat(displayValue.replace(',', '.')))) {
                         td.classList.add('numeric');
-                        // Преобразуем запятую в точку для визуального единообразия, но отображаем как есть
-                        let numValue = parseFloat(displayValue.replace(',', '.'));
-                        if (!isNaN(numValue)) {
-                            // Оставляем как строку, но для коэффициентов можно показать до 2 знаков
-                            if (headerName.includes('коэффициент') || headerName.includes('п1') || headerName.includes('п2') || headerName.includes('ничья')) {
-                                if (numValue % 1 !== 0) displayValue = numValue.toFixed(2);
-                            }
+                        let num = parseFloat(displayValue.replace(',', '.'));
+                        if (!isNaN(num)) {
+                            if (headerLower.includes('коэффициент') || headerLower.includes('п1') || headerLower.includes('п2') || headerLower.includes('ничья')) displayValue = num.toFixed(2);
+                            else if (headerLower.includes('владение')) displayValue = num.toFixed(1);
+                            else displayValue = (Math.abs(num - Math.floor(num)) < 0.0001) ? Math.floor(num).toString() : num.toFixed(2);
                         }
-                        td.textContent = displayValue;
-                    } 
-                    else if (headerName.includes('дома') || headerName.includes('гости') || headerName.includes('страна') || headerName.includes('чемпионат')) {
+                        td.textContent = displayValue === '' ? '—' : displayValue;
+                    } else if (headerLower.includes('дома') || headerLower.includes('гости') || headerLower.includes('страна') || headerLower.includes('чемпионат') || headerLower === 'дома' || headerLower === 'гости') {
                         td.classList.add('team-name');
                         td.textContent = displayValue || '—';
-                    }
-                    else {
-                        td.textContent = displayValue || '—';
-                    }
-                    
-                    // дополнительно если это коэффициенты bet365 — добавим класс для выделения
-                    if (headerName.includes('коэффициенты п1') || headerName.includes('коэффициенты н') || headerName.includes('коэффициенты п2') ||
-                        headerName === 'коэффициенты п1' || headerName === 'коэффициенты н' || headerName === 'коэффициенты п2') {
+                    } else if ((headerLower.includes('коэффициенты п1') || headerLower.includes('коэффициенты н') || headerLower.includes('коэффициенты п2')) && displayValue) {
                         td.classList.add('coeff');
-                        if (displayValue && !isNaN(parseFloat(displayValue))) {
-                            let val = parseFloat(displayValue);
-                            td.textContent = val.toFixed(2);
-                        }
-                    }
-                    
-                    // Обработка счета "X - Y" или подобного
-                    if ((headerName.includes('счет хозяев') || headerName.includes('счет гостей')) && displayValue !== '—') {
-                        td.classList.add('numeric');
+                        let val = parseFloat(displayValue.replace(',', '.'));
+                        if (!isNaN(val)) td.textContent = val.toFixed(2);
+                        else td.textContent = displayValue;
+                    } else {
+                        td.textContent = displayValue || '—';
                     }
                     tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
             }
         }
-        
-        // Загрузка и обработка CSV
-        function loadAndDisplayCSV() {
+
+        // Построение динамических контролов фильтров (на основе уникальных значений из данных)
+        function buildFilterControls() {
+            const container = document.getElementById('filterInputsContainer');
+            if (!container || !headersList.length || !fullDataRows.length) return;
+
+            container.innerHTML = '';
+            // для каждого столбца создаём фильтр
+            for (let i = 0; i < headersList.length; i++) {
+                const headerOrig = headersList[i];
+                const headerDisplay = beautifyHeader(headerOrig).replace(/\n/g, ' ');
+                // собираем уникальные значения (для select или input)
+                const uniqueValues = new Set();
+                for (let row of fullDataRows) {
+                    let val = (i < row.length) ? row[i] : '';
+                    val = (val === undefined || val === null) ? '' : val.trim();
+                    if (val !== '') uniqueValues.add(val);
+                }
+                const uniqueArray = Array.from(uniqueValues).sort();
+                const filterWrapper = document.createElement('div');
+                filterWrapper.className = 'filter-chip';
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = headerDisplay.substring(0, 20) + (headerDisplay.length > 20 ? '..' : '');
+                labelSpan.style.fontSize = '0.65rem';
+                labelSpan.style.fontWeight = '600';
+                labelSpan.style.color = '#1f6392';
+                let inputElement;
+                if (uniqueArray.length > 0 && uniqueArray.length <= 25 && !headerOrig.toLowerCase().includes('дата')) {
+                    const select = document.createElement('select');
+                    select.innerHTML = '<option value="">Все</option>';
+                    uniqueArray.forEach(val => {
+                        const option = document.createElement('option');
+                        option.value = val;
+                        option.textContent = val.length > 25 ? val.substring(0, 22)+'…' : val;
+                        select.appendChild(option);
+                    });
+                    inputElement = select;
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.placeholder = `поиск...`;
+                    input.autocomplete = 'off';
+                    inputElement = input;
+                }
+                inputElement.style.maxWidth = '140px';
+                const currentFilterObj = currentFilters.find(f => f.colIndex === i);
+                if (currentFilterObj) {
+                    if (inputElement.tagName === 'SELECT') inputElement.value = currentFilterObj.filterValue;
+                    else inputElement.value = currentFilterObj.filterValue;
+                }
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '✕';
+                removeBtn.title = 'Очистить фильтр для этого столбца';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (inputElement.tagName === 'SELECT') inputElement.value = '';
+                    else inputElement.value = '';
+                    // обновим currentFilters и сразу перерисуем
+                    const idx = currentFilters.findIndex(f => f.colIndex === i);
+                    if (idx !== -1) currentFilters.splice(idx,1);
+                    renderFilteredTable();
+                    buildFilterControls(); // обновляем интерфейс фильтров
+                };
+                filterWrapper.appendChild(labelSpan);
+                filterWrapper.appendChild(inputElement);
+                filterWrapper.appendChild(removeBtn);
+                container.appendChild(filterWrapper);
+                
+                // вешаем событие изменения (будет сохранять при клике на "применить")
+                inputElement.addEventListener('change', () => {
+                    // при изменении сохраним временно, но применим только по кнопке
+                    let newVal = inputElement.tagName === 'SELECT' ? inputElement.value : inputElement.value;
+                    const existingIdx = currentFilters.findIndex(f => f.colIndex === i);
+                    if (newVal && newVal !== '') {
+                        if (existingIdx !== -1) currentFilters[existingIdx].filterValue = newVal;
+                        else currentFilters.push({ colIndex: i, filterValue: newVal });
+                    } else {
+                        if (existingIdx !== -1) currentFilters.splice(existingIdx,1);
+                    }
+                    renderFilteredTable();
+                });
+                // для input text можно также live поиск с debounce? оставим по change, но для UX добавим 'input' с debounce?
+                if (inputElement.tagName !== 'SELECT') {
+                    let debounceTimer;
+                    inputElement.addEventListener('input', () => {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => {
+                            let newVal = inputElement.value;
+                            const existingIdx = currentFilters.findIndex(f => f.colIndex === i);
+                            if (newVal && newVal.trim() !== '') {
+                                if (existingIdx !== -1) currentFilters[existingIdx].filterValue = newVal;
+                                else currentFilters.push({ colIndex: i, filterValue: newVal });
+                            } else {
+                                if (existingIdx !== -1) currentFilters.splice(existingIdx,1);
+                            }
+                            renderFilteredTable();
+                        }, 400);
+                    });
+                }
+            }
+        }
+
+        // сброс всех фильтров
+        function resetAllFilters() {
+            currentFilters = [];
+            renderFilteredTable();
+            buildFilterControls();
+        }
+
+        // Основная загрузка CSV и инициализация данных
+        function loadCSVAndInit() {
             const tbody = document.getElementById('table-body');
             if (tbody) tbody.innerHTML = '<tr><td colspan="30" style="text-align:center;">⏳ Загрузка data.csv ...</td></tr>';
-            
-            fetch('data.csv', { cache: 'no-store' })  // отключаем кеш, чтобы при обновлении файла всегда свежие данные
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Файл data.csv не найден (HTTP ${response.status}). Поместите CSV в одну папку с index.html`);
-                    }
-                    return response.text();
+            fetch('data.csv', { cache: 'no-store' })
+                .then(resp => {
+                    if (!resp.ok) throw new Error(`data.csv не найден (${resp.status})`);
+                    return resp.text();
                 })
                 .then(csvText => {
-                    if (!csvText || csvText.trim() === '') {
-                        throw new Error('CSV файл пуст. Добавьте данные с разделителем ";"');
-                    }
-                    
-                    const parsedRows = parseCSV(csvText);
-                    if (parsedRows.length === 0) {
-                        throw new Error('CSV не содержит строк после парсинга');
-                    }
-                    
-                    // Первая строка — заголовки (шапка)
-                    const headers = parsedRows[0].map(h => h.trim()).filter((v,i,a) => v !== '' || i===0);
-                    if (headers.length === 0) {
-                        throw new Error('Заголовки отсутствуют или первая строка пуста');
-                    }
-                    
-                    // Данные (все остальные строки, где есть хоть один непустой элемент)
-                    let dataRows = parsedRows.slice(1);
-                    // фильтруем строки, которые полностью пустые (все элементы === '')
-                    dataRows = dataRows.filter(row => {
-                        return row.some(cell => cell !== undefined && cell.trim() !== '');
-                    });
-                    
-                    // Проверяем, совпадает ли количество колонок в данных с заголовками, если нет — дополняем пустыми
-                    const normalizedData = dataRows.map(row => {
+                    if (!csvText.trim()) throw new Error('CSV пуст');
+                    const parsed = parseCSV(csvText);
+                    if (parsed.length < 2) throw new Error('Нет данных или нет заголовков');
+                    const rawHeaders = parsed[0].map(h => h.trim());
+                    headersList = rawHeaders.filter((v,i,a) => v !== '' || i===0);
+                    if (headersList.length === 0) throw new Error('Заголовки отсутствуют');
+                    const rawDataRows = parsed.slice(1).filter(row => row.some(cell => cell !== undefined && cell.trim() !== ''));
+                    fullDataRows = rawDataRows.map(row => {
                         const newRow = [...row];
-                        while (newRow.length < headers.length) newRow.push('');
-                        // если больше колонок чем заголовков — обрезаем (нестандартно, но безопасно)
-                        if (newRow.length > headers.length) newRow.length = headers.length;
-                        return newRow;
+                        while(newRow.length < headersList.length) newRow.push('');
+                        if(newRow.length > headersList.length) newRow.length = headersList.length;
+                        return newRow.map(cell => (cell === undefined ? '' : cell));
                     });
-                    
-                    renderTable(headers, normalizedData);
+                    currentFilters = [];
+                    renderFilteredTable();
+                    buildFilterControls();
                 })
-                .catch(error => {
-                    console.error('Ошибка при загрузке CSV:', error);
+                .catch(err => {
+                    console.error(err);
                     const tbody = document.getElementById('table-body');
                     if (tbody) {
-                        tbody.innerHTML = `
-                            <tr>
-                                <td colspan="30" style="padding: 2rem; text-align:center; background:#fff0f0;">
-                                    <strong>⚠️ Ошибка доступа к данным</strong><br>
-                                    ${error.message}<br><br>
-                                    📌 <span style="background:#fee2e2; padding:4px 8px; border-radius:12px;">Требования: файл <strong>data.csv</strong> должен лежать рядом с index.html, разделитель — точка с запятой (;).</span><br>
-                                    Пример первой строки (шапка):<br>
-                                    <code style="background:#f1f1f1; display:inline-block; margin-top:8px; padding:6px;">Дата;Страна;Чемпионат;Тур;Дома;Гости;Счет хозяев;Счет гостей;Ожидаемые голы (xG) Дома;Ожидаемые голы (xG) Гости;xG в створ (xGOT) Дома;xG в створ (xGOT) Гости;Владение мячом Дома;Владение мячом Гости;Удары в створ Дома;Удары в створ Гости;Угловые Дома;Угловые Гости;Желтые карточки Дома;Желтые карточки Гости;Красные карточки Дома;Красные карточки Гости;Коэффициенты П1;Коэффициенты Н;Коэффициенты П2</code>
-                                </td>
-                            </tr>
-                        `;
+                        tbody.innerHTML = `<tr><td colspan="30" style="padding:1.5rem;text-align:center;background:#fff0f0;"><strong>⚠️ ${err.message}</strong><br>Поместите data.csv рядом с index.html (разделитель ;)</td></tr>`;
                     }
-                    const thead = document.getElementById('table-header');
-                    if (thead) thead.innerHTML = ''; // чистим шапку при ошибке
+                    const containerFilters = document.getElementById('filterInputsContainer');
+                    if (containerFilters) containerFilters.innerHTML = '<div style="color:red;">Ошибка загрузки CSV</div>';
                 });
         }
+
+        // Применение фильтров (доп. кнопка)
+        document.getElementById('applyFiltersBtn')?.addEventListener('click', () => {
+            renderFilteredTable();
+            buildFilterControls(); // синхронизация
+        });
+        document.getElementById('clearAllFiltersBtn')?.addEventListener('click', () => {
+            resetAllFilters();
+        });
+        document.getElementById('footerRefreshBtn')?.addEventListener('click', () => {
+            loadCSVAndInit();
+            const toast = document.createElement('span');
+            toast.textContent = '🔄 Обновление...';
+            toast.style.cssText = 'background:#2563eb; color:white; border-radius:40px; padding:2px 12px; font-size:0.7rem; margin-left:12px;';
+            const footer = document.querySelector('.footer');
+            const old = footer?.querySelector('.live-toast');
+            if(old) old.remove();
+            toast.classList.add('live-toast');
+            footer?.appendChild(toast);
+            setTimeout(() => toast.remove(), 1500);
+        });
         
-        // запускаем загрузку сразу
-        loadAndDisplayCSV();
-        
-        // дополнительно: если нужно автообновление при повторном фокусе, но достаточно однократной загрузки.
-        // добавим возможность перезагрузки по нажатию (полезно для дебага) — но не обязательно, оставим чистую логику.
-        // Для удобства: при клике на футер можно перезагрузить данные (скрытая фича)
-        const footer = document.querySelector('.footer');
-        if (footer) {
-            footer.style.cursor = 'pointer';
-            footer.addEventListener('click', (e) => {
-                if (e.target.closest('.footer')) {
-                    loadAndDisplayCSV();
-                    const msg = document.createElement('span');
-                    msg.textContent = '🔄 Обновление...';
-                    msg.style.fontSize = '0.7rem';
-                    msg.style.marginLeft = '12px';
-                    msg.style.color = '#2563eb';
-                    const oldMsg = footer.querySelector('.refresh-toast');
-                    if (oldMsg) oldMsg.remove();
-                    msg.classList.add('refresh-toast');
-                    footer.appendChild(msg);
-                    setTimeout(() => msg.remove(), 1500);
-                }
-            });
-        }
+        loadCSVAndInit();
     })();
 </script>
 </body>
